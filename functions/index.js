@@ -29,6 +29,8 @@ exports.newPlayer = functions.database.ref('/lobby').onWrite(event => {
 
 		updates[`/games/${newGameId}`] = newGame;
 		updates[`/lobby`] = {};
+		updates[`/userGames/${playersInLobby[0]}`] = newGameId;
+		updates[`/userGames/${playersInLobby[1]}`] = newGameId;
 
 		// And add them to the new game...
 		return admin.database().ref().update(updates);

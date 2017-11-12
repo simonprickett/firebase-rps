@@ -52,7 +52,7 @@ const app = {
 		$('#enterLobbyArea').hide();
 		$('#waitingForOpponentArea').show();
 
-		const myGameRef = firebase.database().ref(`users/${userUid}/gameId`);
+		const myGameRef = firebase.database().ref(`userGames/${userUid}`);
 		myGameRef.on('value', app.onGameStarted);
 	},
 
@@ -74,8 +74,13 @@ const app = {
 
 		if (data) {
 			$('#waitingForOpponentArea').hide();
-			// TODO stuff...
+			$('#makeAMoveArea').show();
+			$('.moveButton').on('click', app.onPlayerMove);
 		}
+	},
+
+	onPlayerMove: (event) => {
+		alert('some move button pressed');
 	}
 };
 
