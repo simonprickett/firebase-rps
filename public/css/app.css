@@ -1,0 +1,19 @@
+.introArea {
+	
+}
+
+.loggedInUserArea {
+	display: none;
+}
+
+.gamePlayArea {
+	display: none;
+}
+
+.highScoreArea {
+	display: none;
+}
+
+.waitingForOpponentArea {
+	display: none;
+}
