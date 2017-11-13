@@ -27,7 +27,7 @@ const app = {
 
 			// Create a user object in Firebase DB, so other users can see this one's 
 			// name and profile
-			firebase.database().ref(`users/${user.uid}`).set({
+			firebase.database().ref(`/users/${user.uid}`).set({
     			displayName: user.displayName,
     			photoURL: user.photoURL
   			});
@@ -42,17 +42,17 @@ const app = {
 			})
 
 			// Register for high score table events
-			const highScoreRef = firebase.database().ref('scores');
+			const highScoreRef = firebase.database().ref('/scores');
 			highScoreRef.on('value', app.onHighScoreUpdate);
 		});		
 	},
 
 	enterLobby: (userUid) => {
-		firebase.database().ref(`lobby/${userUid}`).set(true);
+		firebase.database().ref(`/lobby/${userUid}`).set(true);
 		$('#enterLobbyArea').hide();
 		$('#waitingForOpponentArea').show();
 
-		const myGameRef = firebase.database().ref(`userGames/${userUid}`);
+		const myGameRef = firebase.database().ref(`/userGames/${userUid}`);
 		myGameRef.on('value', app.onGameStarted);
 	},
 
@@ -70,17 +70,20 @@ const app = {
 	},
 
 	onGameStarted: (snapshot) => {
-		const data = snapshot.val();
+		const gameId = snapshot.val();
 
-		if (data) {
+		if (gameId) {
 			$('#waitingForOpponentArea').hide();
 			$('#makeAMoveArea').show();
-			$('.moveButton').on('click', app.onPlayerMove);
+			$('.moveButton').on('click', { gameId: gameId }, app.onPlayerMove);
 		}
 	},
 
-	onPlayerMove: (event) => {
-		alert('some move button pressed');
+	onPlayerMove: function(event) {
+		const playerMove = $(this).data('move');
+		const userUid = firebase.auth().currentUser.uid;
+		// TODO need game id to set:
+		console.log(`/games/${event.data.gameId}/moves/${userUid}: ${playerMove}`);
 	}
 };
 
