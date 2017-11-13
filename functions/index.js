@@ -137,6 +137,7 @@ exports.gameStatusChange = functions.database.ref('/games/{gameId}/moves').onUpd
 		// Remove the game after a short delay.
 		setTimeout(() => {
 			admin.database().ref(`/games/${event.params.gameId}`).set({});
+			// TODO also clean out /
 		}, 5000);		
 	});
 
