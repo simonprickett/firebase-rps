@@ -1,5 +1,3 @@
-// TODO database rules in their own JSON file.
-
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
