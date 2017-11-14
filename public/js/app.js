@@ -58,15 +58,19 @@ const app = {
 
 	onHighScoreUpdate: (snapshot) => {
 		const highScores = snapshot.val();
-		let highScoreList = '<ol>';
 
-		// TODO REVERSE THIS USING THE OTHER WAY AROUND STRING APPENDING...
+		console.log(`snapshot val: ${snapshot.val()}`);
+		if (snapshot.val()) {
+			let highScoreList = '<ol>';
 
-		snapshot.forEach((highScore) => {
-			highScoreList = `<li>${highScore.key}: ${highScore.val()}</li>${highScoreList}`;
-		});
+			snapshot.forEach((highScore) => {
+				highScoreList = `<li>${highScore.key}: ${highScore.val()}</li>${highScoreList}`;
+			});
 		
-		$('#highScoreTable').html(`<ol>${highScoreList}</ol>`);
+			$('#highScoreTable').html(`<ol>${highScoreList}</ol>`);
+		} else {
+			$('#highScoreTable').html('<p>No high scores yet!</p>');
+		}
 	},
 
 	onGameStarted: (snapshot) => {
