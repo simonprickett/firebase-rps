@@ -29,8 +29,8 @@ exports.newPlayer = functions.database.ref('/lobby').onWrite(event => {
 
 		updates[`/games/${newGameId}`] = newGame;
 		updates[`/lobby`] = {};
-		updates[`/userGames/${playersInLobby[0]}`] = newGameId;
-		updates[`/userGames/${playersInLobby[1]}`] = newGameId;
+		updates[`/userGames/${playersInLobby[0]}`] = `${newGameId}`;
+		updates[`/userGames/${playersInLobby[1]}`] = `${newGameId}`;
 
 		// And add them to the new game...
 		return admin.database().ref().update(updates);
@@ -124,7 +124,7 @@ exports.gameStatusChange = functions.database.ref('/games/{gameId}/moves').onUpd
 		results[player1Name] = 'lost';
 	}
 
-	admin.database().ref(`/scores/${winnerName}`).once('value').then(function(winnerCurrentScoreSnapshot) {
+	admin.database().ref(`/scores/${winnerName}`).once('value').then((winnerCurrentScoreSnapshot) => {
 		// When someone wins, update scoreboard and delete this game... or do something with it?
 		let newScore = 1;
 
@@ -137,8 +137,24 @@ exports.gameStatusChange = functions.database.ref('/games/{gameId}/moves').onUpd
 		// Remove the game after a short delay.
 		setTimeout(() => {
 			admin.database().ref(`/games/${event.params.gameId}`).set({});
-			// TODO also clean out /userGames/<userId> where value is event.params.gameId
-			const userGamesRef = admin.database().ref(`/userGames`);
+
+			// This should be optimized? LOOK AGAIN AT A QUERY HERE...
+			const p1UserGamesRef = admin.database().ref(`/userGames/${player1Name}`);
+
+			p1UserGamesRef.once('value').then((p1userGamesSnapshot) => {
+				if (p1userGamesSnapshot.val() === event.params.gameId) {
+					admin.database().ref(`/userGames/${player1Name}`).set({});
+				}
+			});
+
+			const p2UserGamesRef = admin.database().ref(`/userGames/${player2Name}`);
+
+			p2UserGamesRef.once('value').then((p2userGamesSnapshot) => {
+				if (p2userGamesSnapshot.val() === event.params.gameId) {
+					admin.database().ref(`/userGames/${player2Name}`).set({});
+				}
+			});
+
 		}, 5000);		
 	});
 
