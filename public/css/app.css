@@ -21,3 +21,11 @@
 .makeAMoveArea {
 	display: none;
 }
+
+.waitingForOpponentMoveArea {
+	display: none;
+}
+
+.resultArea {
+	display: none;
+}

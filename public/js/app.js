@@ -80,10 +80,44 @@ const app = {
 	},
 
 	onPlayerMove: function(event) {
+		const waitingForOpponentMoveArea = $('#waitingForOpponentMoveArea');
 		const playerMove = $(this).data('move');
 		const userUid = firebase.auth().currentUser.uid;
-		// TODO need game id to set:
-		console.log(`/games/${event.data.gameId}/moves/${userUid}: ${playerMove}`);
+		const gameId = event.data.gameId;
+
+		firebase.database().ref(`/games/${gameId}/moves/${userUid}`).set(playerMove);
+
+		$('#makeAMoveArea').hide();
+		waitingForOpponentMoveArea.html(`You played ${playerMove}... waiting for opponent to move...`);
+		waitingForOpponentMoveArea.show();
+
+		const resultRef = firebase.database().ref(`/games/${gameId}/result`);
+		resultRef.on('value', app.onGameResult);
+	},
+
+	onGameResult: (snapshot) => {
+		const result = snapshot.val();
+
+		if (result) {
+			const userUid = firebase.auth().currentUser.uid;
+			const userResult = result[userUid];
+
+			if (userResult === 'retry') {
+				$('#resultButton').val('Try Again');
+				$('#resultDisplayArea').html('You both played the same move!');
+			} else {
+				$('#resultButton').val('Play Again');
+				$('#resultDisplayArea').html(`You ${userResult}!`);
+			}
+			
+			$('#waitingForOpponentMoveArea').hide();
+			$('#resultArea').show();
+
+			$('#resultButton').on('click', function(event) {
+				// TODO get the user to play another move or put them back in the lobby...
+				alert('TODO');
+			});
+		}
 	}
 };
 

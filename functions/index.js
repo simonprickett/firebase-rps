@@ -117,11 +117,11 @@ exports.gameStatusChange = functions.database.ref('/games/{gameId}/moves').onUpd
 	}
 
 	if (winnerName === player1Name) {
-		results[player1Name] = 'win';
-		results[player2Name] = 'lose';
+		results[player1Name] = 'won';
+		results[player2Name] = 'lost';
 	} else {
-		results[player2Name] = 'win';
-		results[player1Name] = 'lose';
+		results[player2Name] = 'won';
+		results[player1Name] = 'lost';
 	}
 
 	admin.database().ref(`/scores/${winnerName}`).once('value').then(function(winnerCurrentScoreSnapshot) {
@@ -137,7 +137,7 @@ exports.gameStatusChange = functions.database.ref('/games/{gameId}/moves').onUpd
 		// Remove the game after a short delay.
 		setTimeout(() => {
 			admin.database().ref(`/games/${event.params.gameId}`).set({});
-			// TODO also clean out /
+			// TODO also clean out /userGames/<userId> where value is event.params.gameId
 		}, 5000);		
 	});
 
