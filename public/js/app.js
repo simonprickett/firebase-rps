@@ -43,7 +43,7 @@ const app = {
 
 			// Register for high score table events
 			const highScoreRef = firebase.database().ref('/scores');
-			highScoreRef.on('value', app.onHighScoreUpdate);
+			highScoreRef.orderByValue().limitToLast(10).on('value', app.onHighScoreUpdate);
 		});		
 	},
 
@@ -58,15 +58,15 @@ const app = {
 
 	onHighScoreUpdate: (snapshot) => {
 		const highScores = snapshot.val();
-		let highScoreHtml = '<ul>';
+		let highScoreList = '<ol>';
 
-		for (const playerId in highScores) {
-			highScoreHtml = `${highScoreHtml}<li>${playerId}: ${highScores[playerId]}</li>`;
-		}
+		// TODO REVERSE THIS USING THE OTHER WAY AROUND STRING APPENDING...
 
-		highScoreHtml = `${highScoreHtml}</ul>`;
+		snapshot.forEach((highScore) => {
+			highScoreList = `<li>${highScore.key}: ${highScore.val()}</li>${highScoreList}`;
+		});
 		
-		$('#highScoreTable').html(highScoreHtml);
+		$('#highScoreTable').html(`<ol>${highScoreList}</ol>`);
 	},
 
 	onGameStarted: (snapshot) => {

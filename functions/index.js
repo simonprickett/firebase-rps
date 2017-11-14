@@ -138,6 +138,7 @@ exports.gameStatusChange = functions.database.ref('/games/{gameId}/moves').onUpd
 		setTimeout(() => {
 			admin.database().ref(`/games/${event.params.gameId}`).set({});
 			// TODO also clean out /userGames/<userId> where value is event.params.gameId
+			const userGamesRef = admin.database().ref(`/userGames`);
 		}, 5000);		
 	});
 
