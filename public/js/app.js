@@ -3,15 +3,20 @@
 const app = {
 	initialize: () => {
 		// Listen for a click on the login button.
-		$('#loginButton').on('click', (event) => {
+		$('#facebookLoginButton').on('click', (event) => {
 			event.preventDefault();
-			app.loginUser();
+			app.loginUser('facebook');
+		});
+
+		$('#googleLoginButton').on('click', (event) => {
+			event.preventDefault();
+			app.loginUser('google');
 		});
 	},
 
-	loginUser: () => {
+	loginUser: (loginProvider) => {
 		// Log the user in with Facebook 
-		const provider = new firebase.auth.FacebookAuthProvider();
+		const provider = (loginProvider === 'facebook' ? new firebase.auth.FacebookAuthProvider() : new firebase.auth.GoogleAuthProvider());
 
 		firebase.auth().signInWithPopup(provider).then((result) => {
 			const user = firebase.auth().currentUser;
@@ -22,7 +27,7 @@ const app = {
 			$('#introArea').hide();
 			$('#gamePlayArea').show();
 
-			$('#loggedInUserArea').html(`<img src="${user.photoURL}"><p>${user.displayName}</p>`);
+			$('#loggedInUserArea').html(`<img src="${user.photoURL}" class="profilePic"><p>${user.displayName}</p>`);
 			$('#loggedInUserArea').show();
 
 			// Create a user object in Firebase DB, so other users can see this one's 

@@ -1,5 +1,4 @@
 .introArea {
-	
 }
 
 .loggedInUserArea {
@@ -28,4 +27,9 @@
 
 .resultArea {
 	display: none;
+}
+
+.profilePic {
+	width: 100px;
+	height: 100px;
 }
