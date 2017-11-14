@@ -141,17 +141,17 @@ exports.gameStatusChange = functions.database.ref('/games/{gameId}/moves').onUpd
 			// This should be optimized? LOOK AGAIN AT A QUERY HERE...
 			const p1UserGamesRef = admin.database().ref(`/userGames/${player1Name}`);
 
-			p1UserGamesRef.once('value').then((p1userGamesSnapshot) => {
-				if (p1userGamesSnapshot.val() === event.params.gameId) {
-					admin.database().ref(`/userGames/${player1Name}`).set({});
+			p1UserGamesRef.once('value').then((p1UserGamesSnapshot) => {
+				if (p1UserGamesSnapshot.val() === event.params.gameId) {
+					p1UserGamesRef.set({});
 				}
 			});
 
 			const p2UserGamesRef = admin.database().ref(`/userGames/${player2Name}`);
 
-			p2UserGamesRef.once('value').then((p2userGamesSnapshot) => {
-				if (p2userGamesSnapshot.val() === event.params.gameId) {
-					admin.database().ref(`/userGames/${player2Name}`).set({});
+			p2UserGamesRef.once('value').then((p2UserGamesSnapshot) => {
+				if (p2UserGamesSnapshot.val() === event.params.gameId) {
+					p2UserGamesRef.set({});
 				}
 			});
 
