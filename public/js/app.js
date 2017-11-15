@@ -48,7 +48,7 @@ const app = {
 
 			// Register for high score table events
 			const highScoreRef = firebase.database().ref('/scores');
-			highScoreRef.orderByValue().limitToLast(10).on('value', app.onHighScoreUpdate);
+			highScoreRef.orderByChild('score').limitToLast(10).on('value', app.onHighScoreUpdate);
 		});		
 	},
 
@@ -64,12 +64,11 @@ const app = {
 	onHighScoreUpdate: (snapshot) => {
 		const highScores = snapshot.val();
 
-		console.log(`snapshot val: ${snapshot.val()}`);
 		if (snapshot.val()) {
 			let highScoreList = '<ol>';
 
 			snapshot.forEach((highScore) => {
-				highScoreList = `<li>${highScore.key}: ${highScore.val()}</li>${highScoreList}`;
+				highScoreList = `<li><img src="${highScore.val().photoURL}" class="smallProfilePic"> ${highScore.val().displayName}, ${highScore.val().score}</li>${highScoreList}`;
 			});
 		
 			$('#highScoreTable').html(`<ol>${highScoreList}</ol>`);

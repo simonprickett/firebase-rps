@@ -3,7 +3,7 @@
     ".read": "auth != null",
     ".write": "auth != null",
     "scores": {
-    	".indexOn": ".value"
+    	".indexOn": "score"
     }
   }
 }

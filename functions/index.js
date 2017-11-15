@@ -126,11 +126,24 @@ exports.gameStatusChange = functions.database.ref('/games/{gameId}/moves').onUpd
 		// When someone wins, update scoreboard and delete this game... or do something with it?
 		let newScore = 1;
 
+		// User has scored points before, so jut update their score.
 		if (winnerCurrentScoreSnapshot.val()) {
-			newScore = winnerCurrentScoreSnapshot.val() + 1;
-		} 
+		 	newScore = winnerCurrentScoreSnapshot.val().score + 1;
+		 	admin.database().ref(`/scores/${winnerName}`).update({
+		 		score: newScore
+		 	});
+		} else {
+			// First time that this user scored a point, so need to set their profile information too...
+			admin.database().ref(`/users/${winnerName}`).once('value').then((userProfileSnapshot) => {
+				const userProfile = userProfileSnapshot.val();
 
-		admin.database().ref(`/scores/${winnerName}`).set(newScore);
+				admin.database().ref(`/scores/${winnerName}`).set({
+					score: newScore,
+					displayName: userProfile.displayName,
+	    			photoURL: userProfile.photoURL
+				});
+			});
+		}
 
 		// Remove the game after a short delay.
 		setTimeout(() => {
