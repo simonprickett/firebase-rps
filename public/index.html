@@ -19,9 +19,12 @@
     <div id="introArea">
       <p>Welcome to Firebase Rock Paper Scissors, a multi-player game that uses Firebase, Facebook and Google.</p>
       <p>Click the login button to sign in with Facebook or Google and get playing!</p>
-      <input id="facebookLoginButton" type="submit" value="Login with Facebook">
-      <input id="googleLoginButton" type="submit" value="Login with Google">
-      <input id="twitterLoginButton" type="submit" value="Login with Twitter">
+      <div id="loginErrorMessage">
+      </div>
+      <input id="facebookLoginButton" class="socialLoginButton" data-provider="facebook" type="submit" value="Login with Facebook">
+      <input id="googleLoginButton" class="socialLoginButton" data-provider="google" type="submit" value="Login with Google">
+      <input id="twitterLoginButton" class="socialLoginButton" data-provider="twitter" type="submit" value="Login with Twitter">
+      <input id="gitHubLoginButton" class="socialLoginButton" data-provider="github" type="submit" value="Login with GitHub">
     </div>
     <div id="loggedInUserArea" class="loggedInUserArea">
     </div>

@@ -2,20 +2,10 @@
 
 const app = {
 	initialize: () => {
-		// Listen for a click on the login button.
-		$('#facebookLoginButton').on('click', (event) => {
+		// Listen for a click on the login buttons.
+		$('.socialLoginButton').on('click', function (event) {
 			event.preventDefault();
-			app.loginUser('facebook');
-		});
-
-		$('#googleLoginButton').on('click', (event) => {
-			event.preventDefault();
-			app.loginUser('google');
-		});
-
-		$('#twitterLoginButton').on('click', (event) => {
-			event.preventDefault();
-			app.loginUser('twitter');
+			app.loginUser($(this).data('provider'));
 		});
 	},
 
@@ -33,6 +23,8 @@ const app = {
 			case 'twitter':
 				provider = new firebase.auth.TwitterAuthProvider();
 				break;
+			case 'github':
+				provider = new firebase.auth.GithubAuthProvider();
 		}
 
 		firebase.auth().signInWithPopup(provider).then((result) => {
@@ -60,8 +52,7 @@ const app = {
 			$('#enterLobbyButton').on('click', (event) => {
 				event.preventDefault();
 				app.enterLobby(user.uid);
-
-			})
+			});
 
 			// Register for high score table events
 			const highScoreRef = firebase.database().ref('/scores');
