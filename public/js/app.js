@@ -12,11 +12,28 @@ const app = {
 			event.preventDefault();
 			app.loginUser('google');
 		});
+
+		$('#twitterLoginButton').on('click', (event) => {
+			event.preventDefault();
+			app.loginUser('twitter');
+		});
 	},
 
 	loginUser: (loginProvider) => {
 		// Log the user in with Facebook 
-		const provider = (loginProvider === 'facebook' ? new firebase.auth.FacebookAuthProvider() : new firebase.auth.GoogleAuthProvider());
+		let provider;
+
+		switch (loginProvider) {
+			case 'facebook':
+				provider = new firebase.auth.FacebookAuthProvider();
+				break;
+			case 'google':
+				provider = new firebase.auth.GoogleAuthProvider();
+				break;
+			case 'twitter':
+				provider = new firebase.auth.TwitterAuthProvider();
+				break;
+		}
 
 		firebase.auth().signInWithPopup(provider).then((result) => {
 			const user = firebase.auth().currentUser;
