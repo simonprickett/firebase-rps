@@ -15,24 +15,43 @@ exports.newPlayer = functions.database.ref('/lobby').onWrite(event => {
 		const newGameId = cleanShortId.generate();
 
 		let newGame = {
-			moves: {}
+			moves: {},
+			participants: []
 		};
 
 		newGame.moves[playersInLobby[0]] = 'pending';
 		newGame.moves[playersInLobby[1]] = 'pending';
 
-		console.log(`Setting "/games/${newGameId}" to ${JSON.stringify(newGame)}`);
+		return admin.database().ref(`/users/${playersInLobby[0]}`).once('value').then((player0Snapshot) => {
+			newGame.participants.push({
+				playerId: playersInLobby[0],
+				displayName: player0Snapshot.val().displayName,
+				photoURL: player0Snapshot.val().photoURL
+			});
 
-		// Delete these players from the lobby...
-		const updates = {};
+			return admin.database().ref(`/users/${playersInLobby[1]}`).once('value').then((player1Snapshot) => {
+				newGame.participants.push({
+					playerId: playersInLobby[1],
+					displayName: player1Snapshot.val().displayName,
+					photoURL: player1Snapshot.val().photoURL
+				});
 
-		updates[`/games/${newGameId}`] = newGame;
-		updates[`/lobby`] = {};
-		updates[`/userGames/${playersInLobby[0]}`] = `${newGameId}`;
-		updates[`/userGames/${playersInLobby[1]}`] = `${newGameId}`;
-
-		// And add them to the new game...
-		return admin.database().ref().update(updates);
+				return 0;
+			});
+		}).then(() => {
+			console.log(`Setting "/games/${newGameId}" to ${JSON.stringify(newGame)}`);
+			
+			// Delete these players from the lobby...
+			const updates = {};
+	
+			updates[`/games/${newGameId}`] = newGame;
+			updates[`/lobby`] = {};
+			updates[`/userGames/${playersInLobby[0]}`] = `${newGameId}`;
+			updates[`/userGames/${playersInLobby[1]}`] = `${newGameId}`;
+	
+			// And add them to the new game...
+			return admin.database().ref().update(updates);			
+		});
 	} else {
 		console.log(`User "${playersInLobby[0]}" is the only user in the lobby, awaiting a challenger...`);
 		return 0;

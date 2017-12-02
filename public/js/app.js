@@ -3,7 +3,7 @@
 const app = {
 	initialize: () => {
 		// Listen for a click on the login buttons.
-		$('.socialLoginButton').on('click', function (event) {
+		$('.socialLoginButton').on('click', function(event) {
 			event.preventDefault();
 			app.loginUser($(this).data('provider'));
 		});
@@ -92,6 +92,14 @@ const app = {
 			$('#waitingForOpponentArea').hide();
 			$('#makeAMoveArea').show();
 			$('.moveButton').on('click', { gameId: gameId }, app.onPlayerMove);
+
+			firebase.database().ref(`/games/${gameId}/participants`).once('value', function(gameParticipantsSnapshot) {
+				const participants = gameParticipantsSnapshot.val();
+
+				$('#opponentDetailsArea').html(`<img src="${participants[0].photoURL}" class="smallProfilePic"> ${participants[0].displayName}
+				                                <img src="${participants[1].photoURL}" class="smallProfilePic"> ${participants[1].displayName}`).show();
+				console.log(gameParticipantsSnapshot.val());
+			});
 		}
 	},
 
