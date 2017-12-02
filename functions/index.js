@@ -1,17 +1,18 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const cleanShortId = require('clean-shortid');
 
 admin.initializeApp(functions.config().firebase);
 
 // Function to watch for players arriving in the lobby
 exports.newPlayer = functions.database.ref('/lobby').onWrite(event => {
-	const playersInLobby = Object.keys(event.data.val());
+	const playersInLobby = (event.data.val() ? Object.keys(event.data.val()) : []);
 
 	// Pair up players if there are two...
 	if (playersInLobby.length === 2) {
 		console.log(`Need to start a game between "${playersInLobby[0]}" and "${playersInLobby[1]}"`);
 
-		const newGameId = Date.now();
+		const newGameId = cleanShortId.generate();
 
 		let newGame = {
 			moves: {}
