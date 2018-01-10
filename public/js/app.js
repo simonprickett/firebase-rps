@@ -139,7 +139,14 @@ const app = {
 
 			$('#resultButton').on('click', function(event) {
 				// TODO get the user to play another move or put them back in the lobby...
-				alert('TODO');
+				if (this.value === 'Try Again') {
+					// Give the user ability to make another move.
+					$('#resultArea').hide();
+					$('#makeAMoveArea').show();
+				} else {
+					// Put the user back in the lobby.
+					alert('TODO re-enter lobby');
+				}
 			});
 		}
 	}

@@ -76,7 +76,10 @@ exports.gameStatusChange = functions.database.ref('/games/{gameId}/moves').onUpd
 	// Check if either move is pending and do nothing if so
 	if (player1Move === 'pending' || player2Move === 'pending') {
 		console.log('Still waiting for both players to make a move.');
-		return 0;
+
+		// In case this game has needed more than one round, blow away any 
+		// prior result.
+		return admin.database().ref(`/games/${event.params.gameId}/result`).set({});
 	}
 
 	if (player1Move === player2Move) {
